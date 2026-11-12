@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartPatch — Garrafa térmica inteligente para canetas de insulina</title>
+<meta name="description" content="SmartPatch: garrafa térmica com anel LED e ecrã que monitoriza a temperatura das tuas canetas de insulina em viagem e conta os 28 dias de utilização. Pré-reserva aberta, sem gelo.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0e1a2b">
+<meta name="author" content="SmartPatch">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_PT">
+<meta property="og:site_name" content="SmartPatch">
+<meta property="og:title" content="SmartPatch — Sabe em que estado está a tua insulina, num olhar">
+<meta property="og:description" content="Garrafa térmica a seco com anel LED, histórico de temperatura e contador de 28 dias. Pré-reserva aberta.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SmartPatch — garrafa térmica inteligente para insulina">
+<meta name="twitter:description" content="Anel LED verde, amarelo ou vermelho. Sem gelo, sem dúvidas em viagem.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e1a2b'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2332d296' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "SmartPatch",
+      "email": "smartpatchempreendorismo@gmail.com",
+      "description": "Garrafa térmica inteligente para canetas de insulina em utilização."
+    },
+    {
+      "@type": "WebSite",
+      "name": "SmartPatch",
+      "inLanguage": "pt-PT"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Isto serve para insulina por abrir?", "acceptedAnswer": {"@type": "Answer", "text": "Não. A SmartPatch foi pensada para canetas já em utilização (até 28 dias fora do frigorífico). A insulina por abrir continua a dever ser guardada no frigorífico, como indica o fabricante."}},
+        {"@type": "Question", "name": "Preciso de gelo ou de carregar baterias?", "acceptedAnswer": {"@type": "Answer", "text": "Não usa gelo: o isolamento é a seco, de parede dupla. A tampa tem eletrónica de baixo consumo para o LED, o ecrã e o registo de temperatura."}},
+        {"@type": "Question", "name": "Quanto custa e quando chega?", "acceptedAnswer": {"@type": "Answer", "text": "Ainda estamos a validar o produto, por isso não há preço nem data fechados. Quem pré-reserva é avisado primeiro, sem compromisso de compra."}},
+        {"@type": "Question", "name": "A pré-reserva é uma compra?", "acceptedAnswer": {"@type": "Answer", "text": "Não. É um email a manifestar interesse. Não pedimos pagamento nem dados bancários."}},
+        {"@type": "Question", "name": "Substitui o conselho médico?", "acceptedAnswer": {"@type": "Answer", "text": "Não. Dá-te informação sobre a temperatura a que a caneta esteve exposta. Segue sempre as indicações do fabricante da insulina e da tua equipa de saúde."}}
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+:root{
+  --paper:#f3eee5; --paper-2:#ebe4d7; --ink:#0e1a2b; --ink-2:#3a4659; --line:#d9d0bf;
+  --navy:#0e1a2b; --navy-2:#16263d; --on-navy:#e9e4d8;
+  --ok:#32d296; --warn:#f2a93b; --bad:#ec5b5b; --led:var(--ok);
+  --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --wrap:1160px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.08;letter-spacing:-.02em}
+h1{font-size:clamp(2.5rem,6.2vw,4.8rem)}
+h2{font-size:clamp(1.9rem,4vw,3rem)}
+h3{font-size:1.35rem;letter-spacing:-.01em}
+em{font-style:italic;color:#1f6f55}
+.eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ink-2)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;z-index:100}
+.skip:focus{left:8px}
+:focus-visible{outline:3px solid #2f6fd6;outline-offset:3px;border-radius:6px}
+
+#bar{position:fixed;top:0;left:0;height:3px;width:100%;background:var(--ink);transform:scaleX(0);transform-origin:0 50%;z-index:60}
+
+header.top{position:sticky;top:0;z-index:50;background:rgba(243,238,229,.86);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
+header.top.stuck{border-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{font-family:var(--serif);font-size:1.35rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{width:22px;height:22px;border-radius:50%;border:4px solid var(--ok);display:block;box-shadow:0 0 0 3px var(--navy) inset}
+.links{display:flex;gap:28px;font-size:.92rem}
+.links a{text-decoration:none;color:var(--ink-2);position:relative;padding:4px 0}
+.links a::after{content:"";position:absolute;left:0;bottom:0;height:1.5px;width:100%;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.links a:hover{color:var(--ink)} .links a:hover::after,.links a.on::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 .95rem var(--sans);background:var(--ink);color:#fff;border:0;border-radius:999px;padding:13px 24px;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(14,26,43,.6)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.btn svg{width:16px;height:16px;transition:transform .25s}
+.btn:hover svg{transform:translateX(3px)}
+.burger{display:none;background:none;border:0;width:40px;height:40px;cursor:pointer}
+.burger span{display:block;height:2px;background:var(--ink);margin:6px 8px;transition:transform .3s}
+.burger[aria-expanded=true] span:first-child{transform:translateY(4px) rotate(45deg)}
+.burger[aria-expanded=true] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+@media(max-width:820px){
+  .burger{display:block}
+  .nav .btn{display:none}
+  .links{position:absolute;top:68px;left:0;right:0;background:var(--paper);flex-direction:column;gap:0;padding:8px 20px 20px;border-bottom:1px solid var(--line);clip-path:inset(0 0 100% 0);transition:clip-path .35s;visibility:hidden}
+  .links.open{clip-path:inset(0);visibility:visible}
+  .links a{padding:14px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
+}
+
+/* hero centrado: o modelo 3D é o foco */
+.hero{padding:clamp(28px,5vw,56px) 0 clamp(40px,6vw,80px)}
+.hero-c{display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero h1{font-size:clamp(2.1rem,4.4vw,3.5rem);max-width:15em;margin-top:14px}
+.lede{font-size:clamp(1rem,1.4vw,1.12rem);color:var(--ink-2);max-width:36em;margin:6px auto 28px}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.hero .cta-row{justify-content:center}
+.fine{font-size:.82rem;color:var(--ink-2);margin-top:18px}
+.stage{--gh:clamp(440px,66vh,720px);position:relative;width:min(100% + 40px,920px);margin:clamp(16px,3vw,36px) -20px 0}
+.stage::before{content:"";position:absolute;left:25%;right:25%;top:10%;height:62%;background:radial-gradient(closest-side,var(--led),transparent);opacity:.13;filter:blur(56px);transition:background .6s;pointer-events:none}
+.bottle-wrap{position:relative;perspective:900px}
+.bottle-wrap::after{content:"";position:absolute;left:40%;right:40%;bottom:12%;height:26px;background:radial-gradient(closest-side,rgba(14,26,43,.3),transparent);filter:blur(6px);opacity:calc(1 - var(--open,0));pointer-events:none}
+#bottle{transition:transform .25s ease-out;will-change:transform;height:var(--gh);display:flex;align-items:center;justify-content:center}
+#bottle svg{width:auto;height:72%;filter:drop-shadow(0 26px 22px rgba(14,26,43,.25))}
+#gl{display:none;position:relative;z-index:1;width:100%;height:var(--gh);touch-action:pan-y;cursor:grab;outline:0}
+#gl:active{cursor:grabbing}
+.gl #gl{display:block}
+.gl #bottle{display:none}
+#ledOuter,#ledCore{transition:stroke .5s}
+#ledOuter{animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.5}}
+/* anéis subtis à volta do modelo */
+.dials{position:absolute;left:50%;top:50%;width:min(100%,calc(var(--gh) * 1.3));aspect-ratio:1;transform:translate(-50%,-50%);z-index:2;pointer-events:none;overflow:visible}
+.dial{opacity:.7;transition:opacity .3s}
+.dial:hover,.dial.on{opacity:1}
+.d-track{fill:none;stroke:rgba(14,26,43,.13);stroke-width:.5}
+.d-tick{stroke:rgba(14,26,43,.2);stroke-width:.35}
+.d-fill{fill:none;stroke:var(--led);stroke-width:1;stroke-linecap:round;transition:stroke .5s}
+.d-knob{fill:var(--ink);stroke:var(--paper);stroke-width:1.3;transition:r .2s}
+.dial:hover .d-knob,.dial.on .d-knob{r:4}
+.d-hit{fill:none;stroke:transparent;stroke-width:18;pointer-events:stroke;cursor:pointer;touch-action:none}
+.d-val{font:600 6px var(--sans);fill:var(--ink);font-variant-numeric:tabular-nums}
+.d-lbl{font:600 3px var(--sans);letter-spacing:.2em;fill:var(--ink-2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.status{display:flex;gap:8px;align-items:baseline;justify-content:center;font-size:.78rem;color:var(--ink-2);max-width:34em;min-height:2.6em;margin:-18px auto 0;padding:0 20px}
+.dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--led);box-shadow:0 0 8px var(--led);transform:translateY(-1px);transition:background .5s,box-shadow .5s}
+.hint{text-align:center;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);opacity:.5;margin:6px 0 22px;display:none}
+.gl .hint{display:block}
+@media(max-width:560px){.stage{--gh:clamp(400px,62vh,560px)}.d-val{font-size:7.5px}.d-lbl{font-size:3.8px}}
+
+.facts{border-block:1px solid var(--line)}
+.facts .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.fact{padding:28px 20px;border-left:1px solid var(--line)}
+.fact:first-child{border-left:0;padding-left:0}
+.fact strong{display:block;font:500 clamp(2rem,4vw,3rem)/1 var(--serif);letter-spacing:-.02em}
+.fact span{font-size:.88rem;color:var(--ink-2)}
+@media(max-width:720px){.facts .wrap{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0;padding-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}}
+
+section{padding:clamp(64px,10vw,128px) 0}
+
+.prob{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,6vw,96px)}
+.prob header{position:sticky;top:110px;align-self:start}
+.prob header p{margin-top:20px;color:var(--ink-2);max-width:26em}
+.item{display:grid;grid-template-columns:56px 1fr;gap:16px;padding:32px 0;border-top:1px solid var(--ink)}
+.item:last-child{border-bottom:1px solid var(--ink)}
+.item .n{font:500 1.1rem var(--serif);color:#1f6f55}
+.item h3{margin-bottom:8px}
+.item p{color:var(--ink-2)}
+@media(max-width:820px){.prob{grid-template-columns:1fr}.prob header{position:static}}
+
+.how{background:var(--navy);color:var(--on-navy)}
+.how .eyebrow{color:#9aa5b5}
+.how em{color:var(--ok)}
+.tabs{display:grid;grid-template-columns:320px 1fr;gap:clamp(24px,5vw,72px);margin-top:48px;align-items:start}
+.tablist{display:grid;gap:4px}
+.tab{text-align:left;background:none;border:0;border-left:2px solid rgba(255,255,255,.14);color:#9aa5b5;padding:18px 20px;cursor:pointer;font:500 1.15rem var(--serif);transition:color .25s,border-color .25s,background .25s}
+.tab small{display:block;font:400 .82rem var(--sans);margin-top:2px;opacity:.8}
+.tab:hover{color:#fff}
+.tab[aria-selected=true]{color:#fff;border-color:var(--ok);background:rgba(255,255,255,.04)}
+.panel{background:var(--navy-2);border-radius:22px;padding:clamp(24px,4vw,44px);min-height:330px;display:none;animation:in .5s}
+.panel.on{display:grid;gap:24px;align-content:start}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.panel h3{font-size:clamp(1.5rem,2.6vw,2.1rem)}
+.panel p{color:#c3cad6;max-width:34em}
+.leds{display:flex;gap:12px;flex-wrap:wrap}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:999px;font-size:.85rem;background:rgba(255,255,255,.07)}
+.pill i{width:10px;height:10px;border-radius:50%}
+.layers{display:flex;gap:6px;align-items:stretch;height:90px}
+.layers div{flex:1;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:end;padding:8px;font-size:.72rem;color:#9aa5b5}
+.layers .l2{flex:.35;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 6px,rgba(255,255,255,.1) 6px 7px);align-items:center;justify-content:center;text-align:center}
+.spark{width:100%;height:90px}
+.spark path{fill:none;stroke:var(--ok);stroke-width:2.5;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 2s .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media(max-width:820px){.tabs{grid-template-columns:1fr}.tablist{display:flex;overflow-x:auto;gap:0}.tab{border-left:0;border-bottom:2px solid rgba(255,255,255,.14);white-space:nowrap;padding:14px 16px}.tab small{display:none}.tab[aria-selected=true]{border-color:var(--ok)}}
+
+.cmp-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.table{border-top:1px solid var(--ink)}
+.row{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);align-items:center}
+.row.h{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding:14px 0}
+.row .y,.row .n{display:flex;gap:8px;align-items:center;font-size:.92rem}
+.row .y{font-weight:600}
+.row .n{color:var(--ink-2)}
+.row svg{width:18px;height:18px;flex:none}
+@media(max-width:620px){.row{grid-template-columns:1fr 1fr}.row>:first-child{grid-column:1/-1;font-weight:600}.row.h>:first-child{display:none}}
+
+.faq{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,6vw,96px)}
+details{border-top:1px solid var(--ink);padding:22px 0}
+details:last-child{border-bottom:1px solid var(--ink)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;font:500 1.2rem var(--serif)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:300 1.8rem/1 var(--sans);transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding-top:12px;color:var(--ink-2);max-width:36em}
+@media(max-width:820px){.faq{grid-template-columns:1fr}}
+
+.final{background:var(--paper-2);text-align:center}
+.final h2{max-width:14em;margin:0 auto 20px}
+.final p{color:var(--ink-2);max-width:32em;margin:0 auto 32px}
+.final .cta-row{justify-content:center}
+
+footer{padding:36px 0;font-size:.85rem;color:var(--ink-2);border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+dialog{border:0;border-radius:22px;padding:0;width:min(520px,calc(100% - 32px));background:var(--paper);color:var(--ink);box-shadow:0 40px 100px -20px rgba(0,0,0,.5);max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(14,26,43,.65);backdrop-filter:blur(4px)}
+dialog[open]{animation:pop .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}}
+.dlg{padding:32px;position:relative}
+.dlg h2{font-size:1.8rem;margin-bottom:8px}
+.dlg p{color:var(--ink-2);font-size:.92rem}
+.dlg form{display:grid;gap:14px;margin-top:22px}
+.dlg label{display:grid;gap:6px;font-size:.78rem;font-weight:600;letter-spacing:.03em}
+.dlg input,.dlg select{font:400 1rem var(--sans);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.dlg input:focus,.dlg select:focus{border-color:var(--ink);outline:0}
+.close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:0;background:var(--paper-2);cursor:pointer;font-size:1.2rem}
+.dlg .alt{font-size:.8rem;margin-top:14px;text-align:center}
+
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .js .rv{opacity:1;transform:none}
+  .spark path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Saltar para o conteúdo</a>
+<div id="bar" aria-hidden="true"></div>
+
+<header class="top" id="top">
+  <div class="wrap nav">
+    <a class="logo" href="#" aria-label="SmartPatch, início"><i></i>SmartPatch</a>
+    <nav class="links" id="menu" aria-label="Principal">
+      <a href="#problema">O problema</a>
+      <a href="#como">Como funciona</a>
+      <a href="#comparar">Comparação</a>
+      <a href="#faq">Perguntas</a>
+    </nav>
+    <a class="btn js-cta" href="mailto:smartpatchempreendorismo@gmail.com?subject=Pr%C3%A9-reserva%20SmartPatch%20%E2%80%94%20Pr%C3%A9-venda">Pré-reservar</a>
+    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="hero">
+  <div class="wrap hero-c">
+    <p class="eyebrow rv">Pré-venda aberta · 1.º lote limitado</p>
+    <h1 class="rv" style="--d:.08s">Sabe em que estado está a tua insulina. <em>Num olhar.</em></h1>
+    <div class="stage rv" style="--d:.15s" id="stage">
+      <div class="bottle-wrap" id="bw">
+        <canvas id="gl" aria-label="Modelo 3D da garrafa SmartPatch com cinco canetas de insulina no interior. Arrasta para rodar; agita para abrir." role="img" tabindex="0"></canvas>
+        <div id="bottle">
+          <svg viewBox="90 60 290 420" role="img" aria-label="Garrafa SmartPatch com anel LED na tampa e ecrã de temperatura" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="5" result="a"/><feGaussianBlur stdDeviation="11" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="a"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <linearGradient id="body" x1="0" x2="1"><stop offset="0" stop-color="#141e30"/><stop offset=".14" stop-color="#243552"/><stop offset=".3" stop-color="#4c6690"/><stop offset=".38" stop-color="#5d769e"/><stop offset=".48" stop-color="#334869"/><stop offset=".7" stop-color="#1a273d"/><stop offset=".9" stop-color="#101826"/><stop offset="1" stop-color="#1d2b42"/></linearGradient>
+              <linearGradient id="cap" x1="0" x2="1"><stop offset="0" stop-color="#162133"/><stop offset=".2" stop-color="#2c4061"/><stop offset=".34" stop-color="#567099"/><stop offset=".48" stop-color="#2a3d5c"/><stop offset=".78" stop-color="#141f30"/><stop offset="1" stop-color="#1f2e46"/></linearGradient>
+              <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#435878"/><stop offset=".5" stop-color="#1f2e47"/><stop offset="1" stop-color="#121b2b"/></linearGradient>
+              <radialGradient id="oled" cx=".45" cy=".38" r=".6"><stop offset="0" stop-color="#263142"/><stop offset=".45" stop-color="#0d131c"/><stop offset="1" stop-color="#04070b"/></radialGradient>
+              <linearGradient id="gloss" x1="0" y1="0" x2=".7" y2=".7"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset=".4" stop-color="#fff" stop-opacity=".05"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            </defs>
+            <path d="M132 232V418A98 44 0 0 0 328 418V232Z" fill="url(#body)"/>
+            <path d="M132 142V228A98 44 0 0 0 328 228V142Z" fill="url(#cap)"/>
+            <path d="M132 228A98 44 0 0 0 328 228L328 235A98 44 0 0 1 132 235Z" fill="#070b12"/>
+            <path d="M132 234A98 44 0 0 0 328 234" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>
+            <ellipse cx="230" cy="142" rx="98" ry="48" fill="url(#rim)" stroke="#3b4f6e" stroke-width="1.2"/>
+            <ellipse id="ledOuter" cx="230" cy="141" rx="87" ry="42" fill="none" stroke="#32d296" stroke-width="8" filter="url(#glow)"/>
+            <ellipse id="ledCore" cx="230" cy="141" rx="87" ry="42" fill="none" stroke="#9af0cd" stroke-width="3.5"/>
+            <ellipse cx="230" cy="140" rx="79" ry="37.5" fill="url(#oled)" stroke="#0f172a" stroke-width="2"/>
+            <ellipse cx="222" cy="133" rx="68" ry="29" fill="url(#gloss)"/>
+            <g transform="translate(230 138)" font-family="'Courier New',monospace" font-weight="700">
+              <text id="tTemp" x="-2" y="-2" text-anchor="end" fill="#fff" font-size="31">18</text>
+              <text x="3" y="-14" fill="#e0f2fe" font-size="11" font-family="Inter,sans-serif">°C</text>
+              <text id="tDays" x="0" y="19" text-anchor="middle" fill="#bae6fd" font-size="14">1/28 dias</text>
+            </g>
+            <rect x="223" y="290" width="14" height="30" rx="7" fill="none" stroke="#0c1422" stroke-width="1.6" opacity=".7"/>
+          </svg>
+        </div>
+        <svg class="dials" viewBox="0 0 200 200" aria-hidden="true"><g class="dial" id="dialT"></g><g class="dial" id="dialD"></g></svg>
+      </div>
+      <div class="sr">
+        <label for="temp">Temperatura (°C)</label><input id="temp" type="range" min="8" max="42" value="18">
+        <label for="days">Dias desde que abriste a caneta</label><input id="days" type="range" min="1" max="28" value="1">
+      </div>
+      <p class="status" aria-live="polite"><span class="dot"></span><span id="msg"></span></p>
+      <p class="hint">Arrasta para rodar · agita para abrir · desliza nos anéis</p>
+    </div>
+    <p class="lede rv" style="--d:.2s">A SmartPatch é uma garrafa térmica a seco para canetas de insulina em utilização. Um anel LED na tampa diz-te se está tudo bem, e o ecrã guarda o histórico de temperatura e conta os 28 dias.</p>
+    <div class="cta-row rv" style="--d:.26s">
+      <a class="btn js-cta" href="mailto:smartpatchempreendorismo@gmail.com?subject=Pr%C3%A9-reserva%20SmartPatch%20%E2%80%94%20Pr%C3%A9-venda">Pré-reservar a minha <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+      <a class="btn ghost" href="#como">Ver como funciona</a>
+    </div>
+    <p class="fine rv" style="--d:.3s">Sem pagamento, sem compromisso. A pré-reserva é só um email.</p>
+  </div>
+</div>
+
+<div class="facts">
+  <div class="wrap">
+    <div class="fact rv"><strong>+1 h</strong><span>de viagem no calor, o cenário que nos preocupa</span></div>
+    <div class="fact rv" style="--d:.08s"><strong>28 dias</strong><span>contados no ecrã desde a abertura</span></div>
+    <div class="fact rv" style="--d:.16s"><strong>0 gelo</strong><span>isolamento a seco, sem mala molhada</span></div>
+    <div class="fact rv" style="--d:.24s"><strong>3 cores</strong><span>verde, amarelo ou vermelho. Sem interpretar gráficos</span></div>
+  </div>
+</div>
+
+<section id="problema">
+  <div class="wrap prob">
+    <header class="rv">
+      <p class="eyebrow">O problema</p>
+      <h2 style="margin-top:14px">Uma viagem de carro no verão não devia ser uma dúvida.</h2>
+      <p>Uma caneta em utilização aguenta até 28 dias fora do frigorífico, mas não gosta de calor. E a insulina estragada não se vê.</p>
+    </header>
+    <div>
+      <article class="item rv"><span class="n">01</span><div><h3>As soluções atuais são pesadas</h3><p>Bolsas térmicas e blocos de gelo ocupam espaço na mochila e, quando o gelo derrete, molham tudo à volta.</p></div></article>
+      <article class="item rv"><span class="n">02</span><div><h3>Um termómetro só diz o agora</h3><p>Não te conta se a caneta passou duas horas a 35 °C dentro do carro enquanto estiveste na praia.</p></div></article>
+      <article class="item rv"><span class="n">03</span><div><h3>Na dúvida, deita-se fora</h3><p>Sem saber se ainda está boa, ou deitas a caneta ao lixo por precaução ou arriscas. Ambas as opções são más.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="como">
+  <div class="wrap">
+    <p class="eyebrow rv">Como funciona</p>
+    <h2 class="rv" style="margin-top:14px;max-width:16em">Três coisas que um termómetro <em>não faz</em>.</h2>
+    <div class="tabs">
+      <div class="tablist rv" role="tablist" aria-label="Funcionalidades">
+        <button class="tab" role="tab" id="t1" aria-selected="true" aria-controls="p1">Protege<small>Isolamento a seco</small></button>
+        <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Avisa<small>Anel LED na tampa</small></button>
+        <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Lembra-se<small>Histórico e 28 dias</small></button>
+      </div>
+      <div class="rv" style="--d:.1s">
+        <div class="panel on" role="tabpanel" id="p1" aria-labelledby="t1">
+          <h3>Parede dupla, sem uma gota de gelo.</h3>
+          <p>O isolamento abranda os picos de calor em viagens longas, para a caneta ficar à temperatura de utilização sem blocos de gelo nem bolsas volumosas.</p>
+          <div class="layers" aria-hidden="true"><div>Exterior</div><div class="l2">vácuo</div><div>Caneta</div></div>
+        </div>
+        <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+          <h3>Verde, amarelo, vermelho. Já está.</h3>
+          <p>Um anel de luz na tampa mostra o estado ao instante, mesmo com a garrafa dentro da mala entreaberta ou à luz do sol.</p>
+          <div class="leds"><span class="pill"><i style="background:var(--ok)"></i>Conservação adequada</span><span class="pill"><i style="background:var(--warn)"></i>Perto do limite</span><span class="pill"><i style="background:var(--bad)"></i>Exposição excessiva</span></div>
+        </div>
+        <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+          <h3>Sabe o que se passou quando não estavas.</h3>
+          <p>O ecrã guarda o histórico de temperatura da viagem e conta os dias desde a abertura da caneta. O algoritmo estima o efeito acumulado do calor, não apenas o valor atual.</p>
+          <svg class="spark" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C40 68 60 60 90 62 S140 20 180 18 S240 40 280 55 S350 60 400 50"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="comparar">
+  <div class="wrap">
+    <div class="cmp-head">
+      <div class="rv"><p class="eyebrow">Comparação</p><h2 style="margin-top:14px;max-width:12em">SmartPatch vs. bolsa com gelo.</h2></div>
+      <a class="btn ghost rv js-cta" href="mailto:smartpatchempreendorismo@gmail.com?subject=Pr%C3%A9-reserva%20SmartPatch%20%E2%80%94%20Pr%C3%A9-venda">Quero a minha</a>
+    </div>
+    <div class="table" role="table" aria-label="Comparação entre SmartPatch e bolsa térmica com gelo">
+      <div class="row h" role="row"><span role="columnheader">Em viagens com mais de 1 h</span><span role="columnheader">Bolsa / termómetro</span><span role="columnheader">SmartPatch</span></div>
+      <div class="row rv" role="row"><span role="cell">Regista a temperatura se o carro aquecer sem ti</span><span class="n" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#b34a4a" stroke-width="2"><path d="M4 4l10 10M14 4L4 14"/></svg>Não</span><span class="y" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#1f9a6d" stroke-width="2.2"><path d="M3 9.5l4 4 8-9"/></svg>Sim</span></div>
+      <div class="row rv" role="row"><span role="cell">Ajuda a decidir se a caneta ainda é de confiança</span><span class="n" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#b34a4a" stroke-width="2"><path d="M4 4l10 10M14 4L4 14"/></svg>Não</span><span class="y" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#1f9a6d" stroke-width="2.2"><path d="M3 9.5l4 4 8-9"/></svg>Sim</span></div>
+      <div class="row rv" role="row"><span role="cell">Funciona sem gelo que derrete na mala</span><span class="n" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#b34a4a" stroke-width="2"><path d="M4 4l10 10M14 4L4 14"/></svg>Não</span><span class="y" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#1f9a6d" stroke-width="2.2"><path d="M3 9.5l4 4 8-9"/></svg>Sim</span></div>
+      <div class="row rv" role="row"><span role="cell">Conta os 28 dias desde a abertura</span><span class="n" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#b34a4a" stroke-width="2"><path d="M4 4l10 10M14 4L4 14"/></svg>Não</span><span class="y" role="cell"><svg viewBox="0 0 18 18" fill="none" stroke="#1f9a6d" stroke-width="2.2"><path d="M3 9.5l4 4 8-9"/></svg>Sim</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap faq">
+    <div class="rv"><p class="eyebrow">Perguntas</p><h2 style="margin-top:14px">O que nos costumam perguntar.</h2></div>
+    <div>
+      <details class="rv"><summary>Isto serve para insulina por abrir?</summary><p>Não. Foi pensada para canetas já em utilização (até 28 dias fora do frigorífico). A insulina por abrir continua a dever ficar no frigorífico, como indica o fabricante.</p></details>
+      <details class="rv"><summary>Preciso de gelo ou de carregar baterias?</summary><p>Não usa gelo: o isolamento é a seco, de parede dupla. A tampa tem eletrónica de baixo consumo para o LED, o ecrã e o registo de temperatura.</p></details>
+      <details class="rv"><summary>Quanto custa e quando chega?</summary><p>Ainda estamos a validar o produto, por isso não há preço nem data fechados. Quem pré-reserva é avisado primeiro, sem compromisso de compra.</p></details>
+      <details class="rv"><summary>A pré-reserva é uma compra?</summary><p>Não. É um email a manifestar interesse. Não pedimos pagamento nem dados bancários.</p></details>
+      <details class="rv"><summary>Substitui o conselho médico?</summary><p>Não. Dá-te informação sobre a temperatura a que a caneta esteve exposta. Segue sempre as indicações do fabricante da insulina e da tua equipa de saúde.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="pre-reserva">
+  <div class="wrap">
+    <h2 class="rv">Entra na lista do primeiro lote.</h2>
+    <p class="rv" style="--d:.08s">Diz-nos como viajas e como transportas hoje a insulina. Ajuda-nos a construir o produto certo e és dos primeiros a saber quando estiver pronto.</p>
+    <div class="cta-row rv" style="--d:.16s">
+      <a class="btn js-cta" href="mailto:smartpatchempreendorismo@gmail.com?subject=Pr%C3%A9-reserva%20SmartPatch%20%E2%80%94%20Pr%C3%A9-venda">Pré-reservar por email <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> SmartPatch · Projeto de Inovação e Empreendedorismo</span>
+    <a href="mailto:smartpatchempreendorismo@gmail.com">smartpatchempreendorismo@gmail.com</a>
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgT">
+  <div class="dlg">
+    <button class="close" type="button" id="dlgX" aria-label="Fechar">×</button>
+    <h2 id="dlgT">Pré-reserva SmartPatch</h2>
+    <p>Preenche o que quiseres. Vamos abrir o teu programa de email com a mensagem pronta a enviar.</p>
+    <form id="form">
+      <label>Nome<input name="nome" autocomplete="name" placeholder="O teu nome"></label>
+      <label>Faixa etária
+        <select name="idade"><option value="">Prefiro não dizer</option><option>Menos de 20 anos</option><option>20 a 35 anos</option><option>36 a 60 anos</option><option>Mais de 60 anos</option></select>
+      </label>
+      <label>Viagens com mais de 1 h no calor
+        <select name="viagens"><option value="">Selecionar</option><option>Frequentemente</option><option>Várias vezes no verão / férias</option><option>Raramente</option></select>
+      </label>
+      <label>Como transportas a insulina hoje?
+        <select name="atual"><option value="">Selecionar</option><option>Bolsa térmica com gelo</option><option>Na mala, sem proteção</option><option>Termómetro digital / outra solução</option></select>
+      </label>
+      <button class="btn" type="submit">Abrir email e enviar</button>
+    </form>
+    <p class="alt">O email não abriu? Escreve para <a href="mailto:smartpatchempreendorismo@gmail.com">smartpatchempreendorismo@gmail.com</a></p>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const MAIL = 'smartpatchempreendorismo@gmail.com';
+  const SUBJECT = 'Pré-reserva SmartPatch — Pré-venda';
+
+  const bar = $('#bar'), top = $('#top');
+  const onScroll = () => {
+    const h = document.documentElement;
+    bar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight || 1)})`;
+    top.classList.toggle('stuck', h.scrollTop > 10);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  const burger = $('#burger'), menu = $('#menu');
+  burger.onclick = () => { const o = burger.getAttribute('aria-expanded') !== 'true'; burger.setAttribute('aria-expanded', o); menu.classList.toggle('open', o); };
+  $$('a', menu).forEach(a => a.onclick = () => { burger.setAttribute('aria-expanded', false); menu.classList.remove('open'); });
+
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+  $$('.rv').forEach(el => io.observe(el));
+  const links = $$('a', menu);
+  const so = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-45% 0px -50% 0px' });
+  ['problema', 'como', 'comparar', 'faq'].forEach(id => so.observe($('#' + id)));
+
+  // Simulador do LED (ilustrativo): >30 °C vermelho, >25 °C ou dia >=25 amarelo
+  const temp = $('#temp'), days = $('#days'), root = document.documentElement;
+  const STATES = {
+    ok:   { c: '#32d296', core: '#9af0cd', t: 'Verde: conservação adequada. A insulina está dentro do intervalo de utilização.' },
+    warn: { c: '#f2a93b', core: '#fde1a6', t: 'Amarelo: atenção. Temperatura perto do limite ou caneta a chegar aos 28 dias.' },
+    bad:  { c: '#ec5b5b', core: '#fbb4b4', t: 'Vermelho: exposição excessiva ao calor. Não uses sem confirmar com o teu profissional de saúde.' }
+  };
+  function sim() {
+    const t = +temp.value, d = +days.value;
+    // Cor progressiva: risco 0 (≤20 °C, dia ≤22) → 1 (≥34 °C). Matiz de verde (158°) a vermelho (0°).
+    const risk = Math.min(1, Math.max(0, (t - 20) / 14, (d - 22) / 12));
+    const hue = Math.round(158 * (1 - risk));
+    const S = { ...STATES[risk < 0.3 ? 'ok' : risk < 0.65 ? 'warn' : 'bad'], c: `hsl(${hue}, 80%, 52%)`, core: `hsl(${hue}, 90%, 78%)` };
+    root.style.setProperty('--led', S.c);
+    $('#ledOuter').setAttribute('stroke', S.c); $('#ledCore').setAttribute('stroke', S.core);
+    $('#tTemp').textContent = t; $('#tDays').textContent = d + '/28 dias';
+    $('#msg').textContent = S.t;
+    document.dispatchEvent(new CustomEvent('sim', { detail: { t, d, color: S.c } }));
+  }
+  temp.oninput = days.oninput = sim; sim();
+
+  /* Anéis de temperatura (esquerda) e dias (direita) à volta do modelo.
+     Os <input range> continuam a ser a fonte de verdade (teclado / leitores de ecrã); os anéis só os comandam. */
+  const NS = 'http://www.w3.org/2000/svg', C = 100, RAD = 90;
+  const pt = (deg, r = RAD) => { const a = deg * Math.PI / 180; return [C + r * Math.sin(a), C - r * Math.cos(a)]; };
+  const arcD = (a0, a1, r = RAD) => { const [x0, y0] = pt(a0, r), [x1, y1] = pt(a1, r); return `M${x0} ${y0}A${r} ${r} 0 ${Math.abs(a1 - a0) > 180 ? 1 : 0} ${a1 > a0 ? 1 : 0} ${x1} ${y1}`; };
+  const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); parent.appendChild(n); return n; };
+  function dial(g, input, a0, a1, ticks, fmt, label, anchor) {
+    const min = +input.min, max = +input.max, svg = g.ownerSVGElement;
+    el('path', { d: arcD(a0, a1), class: 'd-track' }, g);
+    for (let i = 0; i <= ticks; i++) {
+      const a = a0 + (a1 - a0) * i / ticks, [x0, y0] = pt(a, RAD + 2), [x1, y1] = pt(a, RAD + (i % 5 ? 3.2 : 4.6));
+      el('line', { x1: x0, y1: y0, x2: x1, y2: y1, class: 'd-tick' }, g);
+    }
+    const fill = el('path', { class: 'd-fill' }, g), knob = el('circle', { r: 3, class: 'd-knob' }, g);
+    const hit = el('path', { d: arcD(a0, a1), class: 'd-hit' }, g);
+    const [lx, ly] = pt((a0 + a1) / 2, RAD - 8);
+    const val = el('text', { x: lx, y: ly, class: 'd-val', 'text-anchor': anchor }, g);
+    el('text', { x: lx, y: ly + 5.5, class: 'd-lbl', 'text-anchor': anchor }, g).textContent = label;
+    const draw = () => {
+      const a = a0 + (a1 - a0) * (input.value - min) / (max - min), [kx, ky] = pt(a);
+      fill.setAttribute('d', arcD(a0, a)); knob.setAttribute('cx', kx); knob.setAttribute('cy', ky); val.textContent = fmt(+input.value);
+    };
+    const pick = e => {
+      const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 200 - C, y = (e.clientY - r.top) / r.height * 200 - C;
+      const th = (Math.atan2(x, -y) * 180 / Math.PI + 360) % 360, dist = b => Math.min(Math.abs(th - b), 360 - Math.abs(th - b));
+      let f = (th - a0) / (a1 - a0); if (f < 0 || f > 1) f = dist(a0) < dist(a1) ? 0 : 1;   // fora do arco: prende à ponta mais próxima
+      const v = Math.round(min + f * (max - min));
+      if (v !== +input.value) { input.value = v; input.dispatchEvent(new Event('input')); }
+    };
+    let on = false;
+    hit.addEventListener('pointerdown', e => { on = true; hit.setPointerCapture(e.pointerId); g.classList.add('on'); pick(e); e.preventDefault(); });
+    hit.addEventListener('pointermove', e => { if (on) pick(e); });
+    const end = () => { on = false; g.classList.remove('on'); };
+    hit.addEventListener('pointerup', end); hit.addEventListener('pointercancel', end);
+    input.addEventListener('input', draw);
+    input.addEventListener('focus', () => g.classList.add('on')); input.addEventListener('blur', () => g.classList.remove('on'));
+    draw();
+  }
+  // arcos de 100° centrados na horizontal: ficam ao lado da garrafa, sem subir até ao título
+  dial($('#dialT'), temp, 220, 320, 17, v => v + '°', 'TEMP', 'start');   // de baixo-esquerda (8°) a cima-esquerda (42°)
+  dial($('#dialD'), days, 140, 40, 27, v => v + '/28', 'DIAS', 'end');    // de baixo-direita (dia 1) a cima-direita (dia 28)
+
+  const bw = $('#bw'), bt = $('#bottle');
+  if (!matchMedia('(prefers-reduced-motion:reduce)').matches && matchMedia('(hover:hover)').matches) {
+    bw.addEventListener('pointermove', e => {
+      const r = bw.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      bt.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 12}deg)`;
+    });
+    bw.addEventListener('pointerleave', () => bt.style.transform = '');
+  }
+
+  const tabs = $$('[role=tab]');
+  function pick(t) {
+    tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; const p = $('#' + x.getAttribute('aria-controls')); p.hidden = !on; p.classList.toggle('on', on); });
+    t.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.onclick = () => pick(t);
+    t.onkeydown = e => {
+      const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (k) { e.preventDefault(); pick(tabs[(i + k + tabs.length) % tabs.length]); }
+    };
+  });
+
+  $$('details').forEach(d => d.addEventListener('toggle', () => { if (d.open) $$('details').forEach(o => o !== d && (o.open = false)); }));
+
+  // Pré-reserva: formulário opcional -> mailto. Sem <dialog>, o href mailto direto funciona.
+  const dlg = $('#dlg');
+  $$('.js-cta').forEach(a => a.addEventListener('click', e => {
+    if (typeof dlg.showModal !== 'function') return;
+    e.preventDefault(); dlg.showModal();
+  }));
+  $('#dlgX').onclick = () => dlg.close();
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  $('#form').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = new FormData(e.target), v = k => (f.get(k) || '').toString().trim() || 'não indicado';
+    const body = [
+      'Olá equipa SmartPatch,', '',
+      'Quero pré-reservar uma SmartPatch e ser avisado(a) quando o 1.º lote estiver disponível.', '',
+      'Nome: ' + v('nome'),
+      'Faixa etária: ' + v('idade'),
+      'Viagens >1h no calor: ' + v('viagens'),
+      'Como transporto a insulina hoje: ' + v('atual'), '',
+      'Entendo que a pré-reserva não implica pagamento nem compromisso de compra.', '',
+      'Obrigado(a)!'
+    ].join('\r\n');
+    location.href = `mailto:${MAIL}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(body)}`;
+    dlg.close();
+  });
+
+  $('#yr').textContent = new Date().getFullYear();
+})();
+</script>
+
+<script id="spt">
+/* Linha temporal da abertura (pura, testável). e: 0 = fechada … 1 = aberta.
+   Tampa: sobe (vedante sai do gargalo) e só depois desliza para o lado.
+   Canetas: sobem a direito pelos furos do suporte; o leque/inclinação só começa com a base fora da garrafa. */
+window.SPT = (() => {
+  const clamp = x => Math.min(1, Math.max(0, x)), ease = x => x * x * (3 - 2 * x);
+  const seg = (e, a, b) => ease(clamp((e - a) / (b - a)));
+  const HOLE = 0.42, RISE = 2.95, LIFT = 0.45;
+  const cap = e => { const l = seg(e, 0, 0.2), s = seg(e, 0.1, 0.42); return { x: -2.6 * s, y: 0.55 * l + 1.15 * s, rz: 0.6 * s }; };
+  const pen = (e, i) => {
+    const d = 0.34 + i * 0.05, up = seg(e, d, d + 0.28), fan = seg(e, d + 0.28, d + 0.46);
+    const a = i / 5 * Math.PI * 2, r = HOLE + 0.68 * fan;
+    return { a, x: Math.sin(a) * r, z: Math.cos(a) * r, y: 1.4 + RISE * up + LIFT * fan, tilt: 0.25 * fan, fan };
+  };
+  return { cap, pen, DURATION: 1.3 };
+})();
+</script>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+/* Modelo 3D procedural da garrafa. Se WebGL/CDN falhar, o SVG fica como fallback. */
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('gl');
+const root = document.documentElement;
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); } catch (e) { renderer = null; }
+
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
+  camera.position.set(0, 5.8, 9.8);
+  camera.lookAt(0, 1.8, 0);
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(4, 8, 5); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 20 });
+  key.shadow.radius = 5; key.shadow.bias = -0.0004;
+  const rim = new THREE.DirectionalLight(0x7aa8ff, 1.6); rim.position.set(-5, 3, -4);
+  scene.add(key, rim, new THREE.HemisphereLight(0x8ea8d0, 0x0b1220, 0.5));
+
+  /* texturas procedurais */
+  const brushedTex = (() => {
+    const c = document.createElement('canvas'); c.width = 64; c.height = 1024;
+    const x = c.getContext('2d');
+    for (let i = 0; i < 1024; i++) { const v = 105 + Math.random() * 100 | 0; x.fillStyle = `rgb(${v},${v},${v})`; x.fillRect(0, i, 64, 1); }
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; return t;
+  })();
+
+  const engraveTex = (() => {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 256;
+    const x = c.getContext('2d');
+    x.strokeStyle = x.fillStyle = 'rgba(8,14,26,.9)'; x.lineWidth = 7; x.lineCap = 'round';
+    x.beginPath(); x.roundRect(70, 40, 26, 110, 13); x.stroke();      // termómetro
+    x.beginPath(); x.arc(83, 168, 20, 0, Math.PI * 2); x.fill();
+    [60, 85, 110].forEach(y => { x.beginPath(); x.moveTo(108, y); x.lineTo(128, y); x.stroke(); });
+    x.font = '600 62px Georgia,serif'; x.textBaseline = 'middle'; x.fillText('SmartPatch', 150, 100);
+    x.font = '500 26px Arial,sans-serif'; x.fillText('THERMOCARE', 154, 160);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+  })();
+
+  const sc = document.createElement('canvas'); sc.width = sc.height = 512;
+  const sx = sc.getContext('2d');
+  const screenTex = new THREE.CanvasTexture(sc); screenTex.colorSpace = THREE.SRGBColorSpace; screenTex.anisotropy = 8;
+  function drawScreen(t, d, col) {
+    sx.fillStyle = '#03060a'; sx.fillRect(0, 0, 512, 512);
+    sx.lineWidth = 14; sx.lineCap = 'round';
+    sx.strokeStyle = 'rgba(255,255,255,.1)'; sx.beginPath(); sx.arc(256, 256, 222, 0, Math.PI * 2); sx.stroke();
+    sx.strokeStyle = col; sx.beginPath(); sx.arc(256, 256, 222, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * d / 28); sx.stroke();
+    sx.textAlign = 'center'; sx.textBaseline = 'middle';
+    sx.fillStyle = '#fff'; sx.font = '700 150px "Courier New",monospace'; sx.fillText(Math.round(t) + '°C', 256, 220);
+    sx.fillStyle = '#bae6fd'; sx.font = '700 46px "Courier New",monospace'; sx.fillText(Math.round(d) + '/28 DIAS', 256, 340);
+    screenTex.needsUpdate = true;
+  }
+
+  /* geometria */
+  const lathe = (pts, seg = 96) => new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), seg);
+  const arc = (cx, cy, r, a0, a1, n = 10) => Array.from({ length: n + 1 }, (_, i) => { const a = a0 + (a1 - a0) * i / n; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; });
+  const R = 1, H = 3, CAP0 = H + 0.05, CAPH = 0.85, RC = 1.03, CAPTOP = CAP0 + CAPH;
+
+  const steel = new THREE.MeshPhysicalMaterial({ color: 0x24406b, metalness: 1, roughness: 0.42, roughnessMap: brushedTex, bumpMap: brushedTex, bumpScale: 0.35, clearcoat: 0.15, clearcoatRoughness: 0.5 });
+  steel.roughnessMap.repeat.set(1, 1);
+  const capSteel = steel.clone(); capSteel.color.set(0x1b3157);
+  const black = new THREE.MeshStandardMaterial({ color: 0x05080d, metalness: 0.6, roughness: 0.35 });
+
+  const pivot = new THREE.Group(), tilt = new THREE.Group();
+  tilt.add(pivot); scene.add(tilt);
+  pivot.position.y = CAPTOP / 2;                       // roda em torno do centro
+  const stack = new THREE.Group(); pivot.add(stack);   // reenquadrado durante a abertura
+  const CAPC = (H - 0.18 + CAPTOP) / 2;                // centro da tampa (vedante → topo)
+  const shellG = new THREE.Group(), pensG = new THREE.Group(), capG = new THREE.Group(), capPivot = new THREE.Group();
+  capPivot.position.y = CAPC; capG.position.y = -CAPC; capPivot.add(capG);
+  stack.add(shellG, pensG, capPivot);
+
+  /* corpo: casco oco (parede exterior + interior) */
+  const shellMat = steel.clone(); shellMat.side = THREE.DoubleSide;
+  shellG.add(new THREE.Mesh(lathe([[0, 0], ...arc(R - 0.16, 0.16, 0.16, -Math.PI / 2, 0), [R, H], [R - 0.07, H], [R - 0.07, 0.12], [0, 0.12]]), shellMat));
+  const decal = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.004, R + 0.004, 0.72, 64, 1, true, -0.62, 1.24),
+    new THREE.MeshStandardMaterial({ map: engraveTex, transparent: true, metalness: 0.3, roughness: 0.6, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+  decal.position.y = 1.55; shellG.add(decal);
+
+  /* suporte interior para 5 canetas: duas placas furadas + eixo central (fica dentro da garrafa) */
+  const HOLE = 0.42, HOLE_R = 0.23;                    // furo 0,23 − bisel 0,02 = 0,21 > clip da caneta (0,20)
+  const plateGeo = (() => {
+    const s = new THREE.Shape(); s.absarc(0, 0, 0.88, 0, Math.PI * 2);
+    for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2, h = new THREE.Path(); h.absarc(Math.sin(a) * HOLE, -Math.cos(a) * HOLE, HOLE_R, 0, Math.PI * 2, true); s.holes.push(h); }
+    const g = new THREE.ExtrudeGeometry(s, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 48 });
+    g.rotateX(-Math.PI / 2); return g;                 // forma (x,y) → plano (x,−z); furos alinhados com as canetas em (sin a, cos a)
+  })();
+  const holderM = new THREE.MeshStandardMaterial({ color: 0x2b3442, metalness: 0.15, roughness: 0.6 });
+  [0.14, 1.15].forEach(y => { const m = new THREE.Mesh(plateGeo, holderM); m.position.y = y; shellG.add(m); });
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.15, 24), holderM); rod.position.y = 0.72; shellG.add(rod);
+
+  /* cinco canetas de insulina */
+  const penSteel = new THREE.MeshPhysicalMaterial({ color: 0x24406b, metalness: 1, roughness: 0.4, roughnessMap: brushedTex, bumpMap: brushedTex, bumpScale: 0.3, clearcoat: 0.2 });
+  const silverM = new THREE.MeshStandardMaterial({ color: 0xe3e8f0, metalness: 1, roughness: 0.18 });
+  const gripM = new THREE.MeshStandardMaterial({ color: 0x0a0f18, metalness: 0.3, roughness: 0.65 });
+  const winC = document.createElement('canvas'); winC.width = 128; winC.height = 256;
+  { const w = winC.getContext('2d'); w.fillStyle = '#e8eef7'; w.fillRect(0, 0, 128, 256); w.fillStyle = '#0e1a2b'; w.font = '700 120px "Courier New",monospace'; w.textAlign = 'center'; w.textBaseline = 'middle'; w.fillText('18', 64, 128); }
+  const winT = new THREE.CanvasTexture(winC); winT.colorSpace = THREE.SRGBColorSpace;
+  const pen0 = new THREE.Group();
+  const add = (geo, mat, x = 0, y = 0, z = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); pen0.add(m); return m; };
+  add(lathe([[0, -1.24], ...arc(0.05, -1.19, 0.05, -Math.PI / 2, 0, 6), [0.1, -1.1], [0, -1.1]], 48), silverM);          // botão de dose
+  add(new THREE.CylinderGeometry(0.15, 0.15, 0.3, 48), gripM, 0, -0.93);                                                   // anel de dose
+  for (let i = 0; i < 28; i++) { const a = i / 28 * Math.PI * 2; add(new THREE.BoxGeometry(0.018, 0.3, 0.02), penSteel, Math.sin(a) * 0.15, -0.93, Math.cos(a) * 0.15).rotation.y = a; }
+  add(new THREE.CylinderGeometry(0.135, 0.135, 0.78, 64), penSteel, 0, -0.39);                                              // corpo
+  add(new THREE.CylinderGeometry(0.147, 0.147, 0.06, 64), silverM, 0, 0.02);                                                // anel prateado
+  add(lathe([[0.143, 0.05], [0.143, 0.98], ...arc(0.103, 0.98, 0.04, 0, Math.PI / 2, 6), [0, 1.02]], 64), penSteel);        // tampa
+  add(new THREE.BoxGeometry(0.03, 0.85, 0.05), silverM, 0, 0.55, 0.155);                                                    // clip
+  add(new THREE.SphereGeometry(0.045, 24, 16), silverM, 0, 0.97, 0.155);
+  add(new THREE.PlaneGeometry(0.12, 0.22), new THREE.MeshStandardMaterial({ color: 0x9aa6b8, metalness: 1, roughness: 0.25 }), 0, -0.55, 0.1355);
+  add(new THREE.PlaneGeometry(0.1, 0.2), new THREE.MeshStandardMaterial({ map: winT, roughness: 0.2 }), 0, -0.55, 0.137);
+  const pens = Array.from({ length: 5 }, (_, i) => {
+    const h = new THREE.Group(); h.rotation.order = 'YXZ';      // yaw = ângulo do furo, depois inclinação para fora
+    const p = pen0.clone(); p.rotation.y = i * 1.3; h.add(p); pensG.add(h); return h;
+  });
+
+  /* tampa inteligente: LED, ecrã e vedante */
+  const cap = new THREE.Mesh(lathe([[0, CAP0], [0.97, CAP0], [RC, CAP0 + 0.01], [RC, CAPTOP - 0.1], ...arc(RC - 0.1, CAPTOP - 0.1, 0.1, 0, Math.PI / 2, 8), [0, CAPTOP]]), capSteel);
+  const groove = new THREE.Mesh(new THREE.CylinderGeometry(0.965, 0.965, 0.07, 96), black); groove.position.y = H + 0.02;
+  const plug = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.86, 0.2, 64), new THREE.MeshStandardMaterial({ color: 0x141b27, roughness: 0.85 })); plug.position.y = H - 0.08;
+  const bezel = new THREE.Mesh(new THREE.RingGeometry(0.7, 0.9, 96), black);
+  bezel.rotation.x = -Math.PI / 2; bezel.position.y = CAPTOP + 0.002;
+  const screen = new THREE.Mesh(new THREE.CircleGeometry(0.7, 96), new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xffffff, emissiveMap: screenTex, emissiveIntensity: 1.15, roughness: 0.45, metalness: 0 }));
+  screen.rotation.x = -Math.PI / 2; screen.position.y = CAPTOP + 0.006;
+  const ledMat = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0x32d296, emissiveIntensity: 3, roughness: 0.3 });
+  const led = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.045, 24, 128), ledMat);
+  led.rotation.x = Math.PI / 2; led.position.y = CAPTOP + 0.012;
+  const haloMat = new THREE.MeshBasicMaterial({ color: 0x32d296, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false });
+  const halo = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.13, 16, 128), haloMat);
+  halo.rotation.x = Math.PI / 2; halo.position.y = CAPTOP + 0.02;
+  capG.add(cap, groove, plug, bezel, screen, halo, led);
+
+  /* abertura: tampa sai para o lado, canetas sobem a direito pelos furos e só abrem em leque fora da garrafa.
+     A linha temporal está em window.SPT (script #spt), testada contra colisões. */
+  let open = 0, wantOpen = false;
+  const stageEl = document.getElementById('stage');
+  const toggleOpen = () => { wantOpen = !wantOpen; goHome = true; vyaw = vpitch = 0; idle = 0; navigator.vibrate?.(25); };
+  const ease = x => x * x * (3 - 2 * x);
+  function layout(dt) {
+    open = Math.min(1, Math.max(0, open + (wantOpen ? 1 : -1) * dt / SPT.DURATION));
+    const c = SPT.cap(open); capPivot.position.set(c.x, CAPC + c.y, 0); capPivot.rotation.z = c.rz;
+    pens.forEach((h, i) => { const p = SPT.pen(open, i); h.position.set(p.x, p.y, p.z); h.rotation.set(p.tilt, p.a, 0); });
+    const es = ease(open);
+    stack.position.set(1.1 * es, -CAPTOP / 2 - 1.0 * es, 0); pivot.scale.setScalar(1 - 0.24 * es);
+    stageEl.style.setProperty('--open', es.toFixed(3));   // sombra no chão desvanece ao abrir
+  }
+
+  /* estado + interação */
+  const ledTarget = new THREE.Color(0x32d296), ledCol = new THREE.Color(0x32d296);
+  let tShow = +document.getElementById('temp').value, dShow = +document.getElementById('days').value, tGoal = tShow, dGoal = dShow, lastKey = '';
+  const css = getComputedStyle(root).getPropertyValue('--led').trim(); if (css) { ledTarget.set(css); ledCol.copy(ledTarget); }
+  document.addEventListener('sim', e => { tGoal = e.detail.t; dGoal = e.detail.d; ledTarget.set(e.detail.color); });
+
+  // Rotação livre nos 3 eixos via quaternion (sem limites de ângulo)
+  const E = new THREE.Euler(), D = new THREE.Quaternion();
+  const q = new THREE.Quaternion().setFromEuler(E.set(0, -1.5, 0));
+  const home = new THREE.Quaternion().setFromEuler(E.set(0.15, 0.55, 0));
+  let goHome = true, vyaw = 0, vpitch = 0, dragging = false, idle = 0, px = 0, py = 0, tx = 0, ty = 0, lastX = 0, lastY = 0;
+  const spin = (pitch, yaw, roll = 0) => q.premultiply(D.setFromEuler(E.set(pitch, yaw, roll)));
+  canvas.addEventListener('pointerdown', e => { dragging = true; goHome = false; lastX = e.clientX; lastY = e.clientY; vyaw = vpitch = 0; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect(); px = (e.clientX - r.left) / r.width - 0.5; py = (e.clientY - r.top) / r.height - 0.5;
+    if (!dragging) return;
+    const mx = e.clientX - lastX, my = e.clientY - lastY; lastX = e.clientX; lastY = e.clientY;
+    spin(my * 0.01, mx * 0.01); vyaw = mx * 0.6; vpitch = my * 0.6; idle = 0;
+    // agitar: 2 inversões de direção (eixo dominante) em < 0,9 s abrem/fecham a garrafa.
+    // Só conta a inversão se o traço anterior tiver ≥ 14 px, para um arrasto lento não disparar.
+    if (Math.hypot(mx, my) > 2) {
+      const dir = Math.abs(mx) > Math.abs(my) ? Math.sign(mx) : 2 * Math.sign(my), now = performance.now();
+      if (lastDir && dir === -lastDir) {
+        if (travel >= 14) {
+          flips = flips.filter(t0 => now - t0 < 900); flips.push(now);
+          if (flips.length >= 2 && now - lastShake > 900) { lastShake = now; flips = []; dragging = false; toggleOpen(); }
+        }
+        travel = 0;
+      }
+      travel += Math.hypot(mx, my); lastDir = dir;
+    }
+  });
+  let lastDir = 0, flips = [], lastShake = 0, travel = 0;
+  const up = () => { dragging = false; };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+  canvas.addEventListener('pointerleave', () => { px = py = 0; });
+  canvas.addEventListener('dblclick', () => { goHome = true; vyaw = vpitch = 0; });
+  canvas.addEventListener('keydown', e => {
+    const m = { ArrowLeft: [0, -0.3], ArrowRight: [0, 0.3], ArrowUp: [-0.3, 0], ArrowDown: [0.3, 0] }[e.key];
+    if (m) { e.preventDefault(); goHome = false; idle = 0; spin(m[0], m[1]); }
+  });
+
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h;
+    camera.fov = w / h < 0.9 ? 36 : 28; camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(canvas); resize();
+
+  let visible = true; new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(canvas);
+  const clock = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    if (!visible || document.hidden) { clock.getDelta(); return; }
+    const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+    const k = (s) => 1 - Math.exp(-s * dt);
+
+    if (goHome) q.slerp(home, k(3));
+    else if (!dragging) {
+      spin(vpitch * dt, vyaw * dt); const f = Math.exp(-3 * dt); vyaw *= f; vpitch *= f;
+      idle += dt; if (!reduce && idle > 2.5) spin(0, 0.25 * dt);
+    }
+    q.normalize(); pivot.quaternion.copy(q);
+    layout(dt);
+    tx += (px - tx) * k(4); ty += (py - ty) * k(4);
+    tilt.rotation.x = 0.1 + ty * 0.12; tilt.rotation.z = -tx * 0.06;
+    tilt.position.y = reduce ? 0 : Math.sin(t * 1.1) * 0.05;
+
+    tShow += (tGoal - tShow) * k(9); dShow += (dGoal - dShow) * k(9);
+    ledCol.lerp(ledTarget, k(6));
+    const key2 = Math.round(tShow) + '|' + Math.round(dShow) + '|' + ledCol.getHexString();
+    if (key2 !== lastKey) { lastKey = key2; drawScreen(tShow, dShow, '#' + ledCol.getHexString()); }
+    const pulse = reduce ? 1 : 0.85 + 0.15 * Math.sin(t * 2.2);
+    ledMat.emissive.copy(ledCol); ledMat.emissiveIntensity = 3 * pulse;
+    haloMat.color.copy(ledCol);
+
+    renderer.render(scene, camera);
+  });
+
+  root.classList.add('gl');
+}
+</script>
+</body>
+</html>
